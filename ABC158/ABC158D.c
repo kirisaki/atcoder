@@ -9,41 +9,54 @@ typedef struct p_tag{
 } string;
 
 int main(){
-    char c;
+    char str[100002];
     int qn;
     int i;
-    char q[5];
+    char q[10];
     int rot = 0;
-    string *head, *tail, *buf;
+    string *head, *tail, *buf, *buf_prev=NULL;
 
-    scanf("%c", &c);
-    (void)getchar();
-    scanf("%d", &qn);
-    (void)getchar();
+    (void)fgets(str, 100002, stdin);
 
-    head = malloc(sizeof(string));
-    head->c = c;
-    head->prev = NULL;
-    head->next = NULL;
-    tail = head;
+    i = 0;
+    while(str[i] != '\n'){
+        buf = malloc(sizeof(string));
+        if(i == 0){
+            head = buf;
+        }
+        buf->c = str[i];
+        buf->prev = buf_prev;
+        buf->next = NULL;
+        if(buf_prev != NULL){
+            buf_prev->next = buf;
+        }
+        buf_prev = buf;
+        i++;
+    };
+    tail = buf;
+
+    (void)scanf("%d", &qn);
+    (void)getchar();
 
     for(i=0; i < qn; i++){
-        scanf("%s\n", q);
+        (void)fgets(q, 10, stdin);
         if(q[0] == '1'){
             rot++;
         }else{
-            if(q[2] == '1'){
+            if(q[2] == '1' && rot % 2 == 0 || q[2] == '2' && rot % 2 == 1){
                 buf = malloc(sizeof(string));
                 buf->c = q[4];
-                buf->next = NULL;
-                buf->prev = head;
-                head->next = buf;
+                buf->next = head;
+                buf->prev = NULL;
+                head->prev = buf;
+                head = buf;
             }else{
                 buf = malloc(sizeof(string));
                 buf->c = q[4];
-                buf->next = tail;
-                buf->prev = NULL;
-                tail->prev = buf;
+                buf->next = NULL;
+                buf->prev = tail;
+                tail->next = buf;
+                tail = buf;
             }
         }
     }
